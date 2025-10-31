@@ -63,21 +63,10 @@ export default function EventPage() {
     return localDateTime.length === 16 ? `${localDateTime}:00` : localDateTime;
   };
 
-  const buildEventsQuery = ({
-    userIds,
-    from,
-    to,
-    limit,
-    page,
-    viewerTimezone,
-  }) => {
+  const buildEventsQuery = ({ userIds, viewerTimezone }) => {
     const parts = [];
     if (userIds)
       parts.push(`userId=${encodeURIComponent(JSON.stringify(userIds))}`);
-    if (from) parts.push(`from=${encodeURIComponent(from)}`);
-    if (to) parts.push(`to=${encodeURIComponent(to)}`);
-    if (limit) parts.push(`limit=${Number(limit)}`);
-    if (page) parts.push(`page=${Number(page)}`);
     if (viewerTimezone)
       parts.push(`viewerTimezone=${encodeURIComponent(viewerTimezone)}`);
     return parts.length ? `?${parts.join("&")}` : "";
@@ -92,10 +81,6 @@ export default function EventPage() {
       if (!token) throw new Error("Unauthorized");
       const q = buildEventsQuery({
         userIds: opts.userIds ?? appliedProfiles,
-        from: opts.from,
-        to: opts.to,
-        limit: opts.limit,
-        page: opts.page,
         viewerTimezone: opts.viewerTimezone ?? timezone,
       });
       const url = `${API_BASE}api/events${q}`;

@@ -155,7 +155,7 @@ export default function LoginForm() {
         </div>
         <Button
           disabled={isLoading || !form.watch("name") || !form.watch("password")}
-          className="w-full"
+          className="w-full bg-[#0d1d90] hover:bg-[#1E1E1E]/90"
         >
           {isLoading ? (
             <LoaderCircle className="mr-2 size-4 animate-spin" />

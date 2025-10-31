@@ -16,15 +16,12 @@ const updateEventSchema = Joi.object({
   endLocal: Joi.string().optional(),
 }).min(1);
 
+
 const listEventsQuerySchema = Joi.object({
   userId: Joi.alternatives().try(
     objectId,
     Joi.array().items(objectId).min(1)
   ).required(),
-  from: Joi.date().iso().optional().allow(null),
-  to: Joi.date().iso().optional().allow(null),
-  limit: Joi.number().integer().min(1).max(100).optional(),
-  page: Joi.number().integer().min(1).optional(),
   viewerTimezone: Joi.string().optional()
 });
 

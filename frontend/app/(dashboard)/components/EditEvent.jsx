@@ -201,19 +201,7 @@ export default function UpdateEventDialog({
       setSaving(false);
     }
   };
-  const dropdownRef = useRef(null);
-   useEffect(() => {
-      function onDoc(e) {
-        if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-          setProfilesOpen(false);
-        }
-        if (appliedRef.current && !appliedRef.current.contains(e.target)) {
-          setAppliedOpen(false);
-        }
-      }
-      document.addEventListener("mousedown", onDoc);
-      return () => document.removeEventListener("mousedown", onDoc);
-    }, []);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
@@ -222,86 +210,6 @@ export default function UpdateEventDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="space-y-2 relative" ref={dropdownRef}>
-            <Label>Profiles</Label>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setProfilesOpen((s) => !s);
-                  if (!profilesOpen)
-                    setTimeout(() => profileSearchRef.current?.focus?.(), 80);
-                }}
-                className="flex-1 text-left border rounded-md px-3 py-2 flex items-center justify-between bg-white"
-              >
-                <span className="text-sm text-gray-700">
-                  {selectedDraftProfiles.length > 0
-                    ? `${selectedDraftProfiles.length} profile${
-                        selectedDraftProfiles.length > 1 ? "s" : ""
-                      } selected`
-                    : "Select profiles..."}
-                </span>
-                <span className="text-xs text-gray-400">
-                  {profilesOpen ? "▲" : "▼"}
-                </span>
-              </button>
-            </div>
-
-            {profilesOpen && (
-              <div className="absolute z-20 mt-2 w-80 right-0 translate-x-4 bg-white border rounded-md shadow-lg">
-                <div className="p-2">
-                  <Input
-                    ref={profileSearchRef}
-                    placeholder="Search profiles..."
-                    value={profileQuery}
-                    onChange={(e) => setProfileQuery(e.target.value)}
-                    className="mb-2"
-                  />
-
-                  <div className="max-h-40 overflow-y-auto">
-                    {filteredDraftProfiles.length > 0 ? (
-                      filteredDraftProfiles.map((p) => {
-                        const id = p._id;
-                        const checked = selectedDraftProfiles.includes(id);
-                        return (
-                          <label
-                            key={id}
-                            className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded-md cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => toggleProfile(id)}
-                              className="w-4 h-4"
-                            />
-                            <span className="text-sm">{p.name}</span>
-                          </label>
-                        );
-                      })
-                    ) : (
-                      <div className="p-2 text-sm text-gray-500">
-                        No profiles found
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-3 flex gap-2">
-                    <Input
-                      placeholder="Add profile..."
-                      value={profileQuery}
-                      onChange={(e) => setProfileQuery(e.target.value)}
-                    />
-                    <Button
-                      onClick={() => handleAddProfile(profileQuery)}
-                      disabled={adding || !profileQuery.trim()}
-                    >
-                      {adding ? "Adding..." : "Add"}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
           <div>
             <Label>Profiles</Label>
             <div className="border rounded-md p-2 mt-1 bg-white max-h-44 overflow-auto">

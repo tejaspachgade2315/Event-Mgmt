@@ -12,12 +12,12 @@ async function createEvent(req, res) {
     const endAtUTC = parseLocalToUTC(payload.endLocal, payload.eventTimezone);
 
     if (endAtUTC <= startAtUTC) {
-      return res.status(400).json({ error: 'end must be after start' });
+      return res.status(400).json({ error: 'End must be after start' });
     }
 
     const nowUTC = new Date();
     if (endAtUTC <= nowUTC) {
-      return res.status(400).json({ error: 'end must not be in the past' });
+      return res.status(400).json({ error: 'End must not be in the past' });
     }
 
     const event = await Event.create({
@@ -42,7 +42,6 @@ async function createEvent(req, res) {
 async function listEventsForUser(req, res) {
   try {
     const rawQuery = { ...req.query };
-
     if (rawQuery.userId !== undefined) {
       const raw = rawQuery.userId;
 
@@ -65,23 +64,18 @@ async function listEventsForUser(req, res) {
     }
 
     const queryValues = await listEventsQuerySchema.validateAsync(rawQuery, { abortEarly: false });
-    let { userId, from, to, limit = 50, page = 1, viewerTimezone } = queryValues;
+    let { userId, viewerTimezone } = queryValues;
 
     const userIds = Array.isArray(userId) ? userId : [userId];
 
     const query = { users: { $in: userIds } };
-    if (from || to) {
-      query.$and = [];
-      if (from) query.$and.push({ endAtUTC: { $gte: new Date(from) } });
-      if (to) query.$and.push({ startAtUTC: { $lte: new Date(to) } });
-    }
 
     const events = await Event.find(query)
       .sort({ startAtUTC: 1 })
-      .skip((page - 1) * (+limit)).limit(+limit)
       .lean()
       .populate('users');
 
+    // Accept any timezone string from client
     const tz = viewerTimezone || 'UTC';
     const transformed = events.map(e => ({
       ...e,
