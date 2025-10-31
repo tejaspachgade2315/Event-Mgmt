@@ -90,9 +90,9 @@ export default function EventPage() {
       setEvents(res.data.events || res.data || []);
     } catch (err) {
       console.error(err);
-      toast.error(
-        err.response?.data?.message || err.message || "Failed to load events"
-      );
+      // toast.error(
+      //   err.response?.data?.message || err.message || "Failed to load events"
+      // );
     } finally {
       setEventsLoading(false);
     }
